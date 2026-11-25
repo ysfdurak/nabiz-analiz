@@ -21,7 +21,7 @@ Ayrıntı ve kör deneme sonuçları: [docs/PROJE.md](docs/PROJE.md).
 Python 3.13 gerekir. Arıza Defteri çalışıyor olmalı (`npm run start:dev`, 8080).
 
 ```bash
-python3 -m venv .venv && .venv/bin/pip install --require-hashes -r requirements-dev.txt
+python3 -m venv .venv && .venv/bin/pip install --require-hashes -r requirements.txt -r requirements-dev.txt
 ARIZA_DEFTERI_URL=http://localhost:8080 .venv/bin/python -m analiz      # http://localhost:8000/v1/ozet
 .venv/bin/python -m pytest -q                                           # matematik, kör tahmin, HTTP, MCP
 ```
