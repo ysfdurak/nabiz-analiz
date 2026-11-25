@@ -1,7 +1,7 @@
 # Nabız Analiz (Python). Ayrıntı: docs/SUNUCU_KURULUMU.md
 #   docker build -t nabiz-analiz .
 # Bağımlılıklar requirements.txt'te sürüm VE özet (hash) ile sabit: pip başka bir dosya indirirse kurulum durur.
-FROM python:3.13.18-slim-trixie
+FROM python:3.15.1-slim-trixie
 ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 PIP_NO_CACHE_DIR=1 PIP_DISABLE_PIP_VERSION_CHECK=1 PORT=8000
 WORKDIR /app
 COPY requirements.txt ./
