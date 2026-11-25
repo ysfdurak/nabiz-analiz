@@ -66,3 +66,4 @@ def test_asinma_yoksa_aralik_uzar():
     assert o.asinan_tur == 0
     assert o.onerilen_gun > 170
     assert "aşınma görülmüyor" in o.gerekce
+    assert "üst sınırda" in o.gerekce, "sınıra dayanan öneri en iyi değer gibi sunulmamalı"
