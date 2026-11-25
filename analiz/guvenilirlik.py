@@ -132,6 +132,8 @@ def en_iyi_aralik(bilesenler: list[tuple[GucYasasi, float]], bakim_maliyeti: flo
         gerekce = "Aşınma var ama yavaş: aralık biraz uzatılınca toplam duruş azalıyor."
     else:
         gerekce = "Mevcut aralık en iyiye yakın."
+    if T_star >= sinirlar[1] - 1:  # en iyi değer aralığın dışında: sayı bir sınır, gerçek bir en iyi değil
+        gerekce += f" Öneri üst sınırda ({sinirlar[1]:.0f} gün): bu bir en iyi değer değil, sınırdır. Aralığı kademeli uzatıp arızayı izleyin."
     return AralikOnerisi(mevcut_gun, T_star, maliyet_orani(mevcut_gun, gecerli, bakim_maliyeti), float(sonuc.fun),
                          yil(mevcut_gun), yil(T_star), asinan, gerekce)
 
