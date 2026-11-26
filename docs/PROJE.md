@@ -117,24 +117,26 @@ Arıza Defteri'nin üreticisinde her türün **gizli** bir β değeri var (`kata
 | Forklift | 30 gün | 12 gün | 229 → 200 | Hidrolik, lastik, fren aşınıyor |
 | Reach truck | 30 gün | 10 gün | 208 → 181 | RT-MAS çok güçlü aşınıyor (β 2,5) |
 | Sorter | 30 gün | 14 gün | 300 → 256 | SR-TRY + SR-ACL (yanılgı aralığı kısaltıyor olabilir) |
-| Konveyör | 45 gün | 28 gün | 308 → 303 | Yalnız motor aşınıyor, kazanç küçük |
-| Streç | 60 gün | 121 gün | 109 → 103 | Aşınma kanıtı yok: aralık uzatılabilir |
+| Konveyör | 45 gün | 25 gün | | Yalnız motor aşınıyor, kazanç küçük |
+| Streç | 60 gün | uzatılabilir (180 gün sınırına dayanıyor) | | Aşınma kanıtı yok |
 
-**Duyarlılık (25.11.2026, aynı veri):** Plansız duruş çarpanı değişince öneri ne kadar oynuyor? Parantezde günlük duruş maliyetindeki düşüş.
+**Duyarlılık (26.11.2026, aynı veri; rastgele türler β = 1):** Plansız duruş çarpanı değişince öneri ne kadar oynuyor? Parantezde günlük duruş maliyetindeki düşüş; `*` öneri arama sınırına (7 ya da 180 gün) dayandı demek.
 
 | Tip | Mevcut | ×1 | ×1,5 | ×2 (varsayılan) | ×3 | ×4 |
 | --- | --- | --- | --- | --- | --- | --- |
 | Forklift | 30 | 19 (%3) | 14 (%7) | 12 (%11) | 9 (%15) | 8 (%19) |
-| Reach truck | 30 | 15 (%11) | 12 (%15) | 10 (%18) | 9 (%22) | 7 (%25) |
-| Sorter | 30 | 19 (%5) | 16 (%8) | 14 (%11) | 12 (%14) | 11 (%16) |
-| Konveyör | 45 | 38 (%0) | 32 (%1) | 28 (%2) | 24 (%4) | 21 (%5) |
-| Streç | 60 | 154 (%16) | 133 (%11) | 121 (%8) | 109 (%6) | 102 (%4) |
+| Reach truck | 30 | 14 (%12) | 12 (%16) | 10 (%19) | 8 (%23) | 7* (%25) |
+| Sorter | 30 | 18 (%7) | 14 (%11) | 13 (%13) | 10 (%17) | 9 (%20) |
+| Konveyör | 45 | 35 (%1) | 28 (%2) | 25 (%4) | 20 (%6) | 17 (%7) |
+| Streç | 60 | 180* | 180* | 180* | 180* | 180* |
 
 Okuma:
-- **Yön sağlam, sayı değil.** Forklift, reach truck ve sorterda her çarpanda "daha sık bakım" çıkıyor; konveyörde kazanç her durumda küçük. Yöneticiye "30 yerine 10-15 gün" diye aralık olarak sunulmalı, tek sayı olarak değil.
-- **Çarpan 1 bile kısaltıyor:** Plansız duruş planlı bakımdan pahalı olmasa da aşınan türler yüzünden sık bakım kazandırıyor. Sonuç yalnız çarpan varsayımına dayanmıyor.
-- **Streç dikkat:** Aşınma kanıtı yok ama öneri 102-154 gün arasında oynuyor. Sebep: sınıfı "rastgele" olan türlerin nokta tahmini β̂ 1'in biraz üstünde ve maliyete bu tahminle giriyor. **Şöyle daha iyi olur:** sınıfı rastgele olan türü β = 1 alıp hesaplamak (o zaman öneri üst sınıra gider) ya da streçte yalnız "uzatılabilir" demek. Karar senin; şimdilik nokta tahmini kullanılıyor ve gerekçe metni "aşınma görülmüyor" diyor.
-- **Sınır uyarısı eklendi:** Öneri 180 günlük üst sınıra dayanırsa gerekçe artık bunun bir en iyi değer değil, sınır olduğunu söylüyor (test: `test_asinma_yoksa_aralik_uzar`).
+- **Yön sağlam, sayı değil.** Forklift, reach truck ve sorterda her çarpanda "daha sık bakım" çıkıyor. Yöneticiye "30 yerine 10-15 gün" diye aralık olarak sunulmalı, tek sayı olarak değil.
+- **Çarpan 1 bile kısaltıyor:** Sonuç yalnız "plansız duruş pahalıdır" varsayımına dayanmıyor.
+- **Streç artık oynamıyor (karar 26.11.2026).** Önceki sürümde öneri 102-154 gün arasında oynuyordu. Sebep: sınıfı "rastgele" olan türlerin nokta tahmini β̂ (1'in biraz üstü, ama güven aralığı 1'i kesiyor) maliyete bu haliyle giriyordu.
+  - **Bu yapı uygun değil, şöyle uygulanır:** Anlamlı olmayan bir tahmini kararın içine sokmak, gürültüyü öneriye çevirir. Sınıfı rastgele olan tür hesapta β = 1 alınır; η, mevcut aralıktaki beklenen arıza aynı kalacak biçimde yeniden hesaplanır (maliyet düzeyi değişmez, yalnız aralığa etkisi kalkar). Kod: `guvenilirlik._anlamli`, test: `test_rastgele_turun_nokta_tahmini_araligi_oynatmaz`.
+  - Streçte aşınan tür yok, öneri üst sınıra gidiyor. Sınıra dayanan öneri sayı olarak değil "uzatılabilir" diye gösterilir (`sinirda: true`); gerekçe metni de bunu söyler. Bir yönetici için doğru cümle: "streçte bakım aralığını kademeli uzatın ve arızayı izleyin".
+- Konveyör önerisi de biraz değişti (28 → 25 gün): KV hattındaki rastgele türlerin β̂ etkisi kalktı.
 
 > **Burada bir test daha yapalım:** Sorterda SR-ACL'yi (yalancı aşınma) dışarıda bırakıp öneriyi yeniden hesapla; 14 günün ne kadarı bu yanılgıdan geliyor görülür.
 
@@ -195,9 +197,9 @@ Okuma:
 - Bir türün bütün arızaları bakımdan sonraki ilk 3 günde: β 1'den büyük mü küçük mü?
 - `PLANSIZ_CARPAN` 2'den 4'e çıkarsa önerilen aralık kısalır mı, uzar mı?
 - Arızasız döngüleri atarsak ne olur?
-- Streç için öneri neden 121 gün?
+- Streç için neden sayı değil "uzatılabilir" yazıyor?
 
-Cevaplar (önce kendin dene): rastgele (aralık 1'i kesiyor) · küçük (erken dönem) · kısalır (arıza daha pahalı, daha sık bakım değer) · arıza olduğundan sık görünür (η küçülür), bakım aralığı önerisi gereksiz kısalır · aşınma kanıtı yok, bakım arızayı azaltmıyor, maliyet yalnız bakımın kendisi.
+Cevaplar (önce kendin dene): rastgele (aralık 1'i kesiyor) · küçük (erken dönem) · kısalır (arıza daha pahalı, daha sık bakım değer) · arıza olduğundan sık görünür (η küçülür), bakım aralığı önerisi gereksiz kısalır · aşınma kanıtı yok, en iyi değer arama sınırının (180 gün) dışında; sayı sınırdır, bu yüzden "uzatılabilir" denir.
 
 ## 11. Elle yapılacak alıştırma
 
@@ -212,7 +214,7 @@ Beklenen: aşınan tiplerde çarpan büyüdükçe aralık kısalır. Sonucunu yu
 **5 dakikalık demo:**
 1. Nabız → Analiz: RT-MAS kırmızı (aşınma), FL-AKU gri (rastgele), ST-AYR sarı (erken dönem). Güven çizgilerini göster.
 2. "Neden Weibull değil" sorusunu bir cümleyle cevapla.
-3. Bakım aralığı: reach truck 30 → 10 gün, streç 60 → 121 gün. Neden zıt yönler?
+3. Bakım aralığı: reach truck 30 → 10 gün, streç "uzatılabilir". Neden zıt yönler?
 4. Kör deneme tablosu: 24 türün 22'si doğru, SR-ACL yanılgısının nedeni.
 5. RT-MAS'ın A3 taslağı: karşı önlemde bakım aralığı önerisi otomatik geliyor.
 
@@ -220,5 +222,6 @@ Beklenen: aşınan tiplerde çarpan büyüdükçe aralık kısalır. Sonucunu yu
 
 | Tarih | Değişiklik |
 | --- | --- |
+| 26.11.2026 | Rastgele sınıfındaki türler bakım aralığı hesabında β = 1 alınır (streç önerisi artık çarpana göre oynamıyor); sınıra dayanan öneri `sinirda` alanıyla işaretlenir. Duyarlılık tablosu yenilendi; 21 test. |
 | 25.11.2026 | İlk CI: çalışma bağımlılıkları da kurulur (requirements-dev yalnız pytest içeriyordu); Dependabot yalnız Python yama sürümü önerir. Plansız duruş çarpanı duyarlılık tablosu (×1-×4); üst sınıra dayanan öneri gerekçede belirtilir (+1 test kontrolü). |
 | 24.11.2026 | V1: güç yasası tahmini (profil olabilirlik, %90 aralık), sınıflandırma, Barlow-Hunter bakım aralığı, Arıza Defteri istemcisi, saatlik önbellek, FastAPI + MCP (3 salt okuma aracı), güvenlik katmanı (Python şablonuyla aynı), özetle sabit bağımlılıklar, 20 test (kör deneme dahil), Docker ve kurulum betiği. Güvenlik taraması ve `pip-audit` temiz. |

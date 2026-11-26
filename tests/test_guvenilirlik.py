@@ -67,3 +67,20 @@ def test_asinma_yoksa_aralik_uzar():
     assert o.onerilen_gun > 170
     assert "aşınma görülmüyor" in o.gerekce
     assert "üst sınırda" in o.gerekce, "sınıra dayanan öneri en iyi değer gibi sunulmamalı"
+    assert o.sinirda
+
+
+def test_rastgele_turun_nokta_tahmini_araligi_oynatmaz():
+    """Sınıfı rastgele olan türün β̂ = 1,3'ü (aralık 1'i kesiyor) öneriyi kısaltmamalı: β = 1 gibi davranmalı.
+    Eski davranışta streç önerisi bu yüzden çarpana göre 102-154 gün arasında oynuyordu."""
+    asinan = GucYasasi(80, 40, 2.2, 1.8, 2.6, 25.0, "asinma")
+    rastgele_13 = GucYasasi(40, 40, 1.3, 0.9, 1.8, 40.0, "rastgele")
+    rastgele_1 = GucYasasi(40, 40, 1.0, 0.8, 1.3, 40.0, "rastgele")
+    yalniz = en_iyi_aralik([(asinan, 60.0)], 150.0, mevcut_gun=30.0)
+    ile = en_iyi_aralik([(asinan, 60.0), (rastgele_13, 60.0)], 150.0, mevcut_gun=30.0)
+    ile1 = en_iyi_aralik([(asinan, 60.0), (rastgele_1, 60.0)], 150.0, mevcut_gun=30.0)
+    assert ile.onerilen_gun == pytest.approx(yalniz.onerilen_gun, abs=0.2)
+    assert ile1.onerilen_gun == pytest.approx(yalniz.onerilen_gun, abs=0.2)
+    # Maliyet düzeyi korunur: mevcut aralıkta rastgele türün beklenen arızası aynı
+    assert ile.maliyet_mevcut == pytest.approx(yalniz.maliyet_mevcut + 60.0 * beklenen_ariza(rastgele_13, 30.0) / 30.0, rel=1e-6)
+    assert not ile.sinirda
