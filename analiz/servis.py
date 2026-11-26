@@ -28,7 +28,7 @@ class KuralHatasi(Exception):
 
 
 class Analizci:
-    def __init__(self, kaynak: AnaKaynak, gun: int = 360, plansiz_carpan: float = 2.0, sure_sn: int = 3600, saat=time.time):
+    def __init__(self, kaynak: AnaKaynak, gun: int = 1095, plansiz_carpan: float = 2.0, sure_sn: int = 3600, saat=time.time):
         self.kaynak, self.gun, self.plansiz_carpan, self.sure_sn, self.saat = kaynak, gun, plansiz_carpan, sure_sn, saat
         self._rapor: dict | None = None
         self._zaman = 0.0

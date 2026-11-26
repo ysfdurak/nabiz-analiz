@@ -4,12 +4,12 @@ from pathlib import Path
 
 import pytest
 
-VERI = Path(__file__).parent / "veri" / "ariza-defteri-360.json.gz"
+VERI = Path(__file__).parent / "veri" / "ariza-defteri-3yil.json.gz"
 
 
 @pytest.fixture(scope="session")
 def ornek():
-    """Arıza Defteri'nden alınmış 360 günlük sentetik kayıt (üreticinin gizli β değerleri testlerde 'gerçek' olarak bilinir)."""
+    """Arıza Defteri'nden alınmış 3 yıllık (1095 gün) sentetik kayıt (üreticinin gizli β değerleri testlerde 'gerçek' olarak bilinir)."""
     with gzip.open(VERI, "rt", encoding="utf-8") as f:
         return json.load(f)
 

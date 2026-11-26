@@ -26,7 +26,7 @@ class AnaKaynak:
         return self._al("/v1/ana-veriler")
 
     def kayitlar(self, gun: int, ekipmanlar: list[str]) -> list[dict]:
-        """Ekipman başına çekilir (bir ekipmanın bir yılı 2000 kaydı aşmaz; toplu istek aşabilir)."""
+        """Ekipman başına çekilir (bir ekipmanın 3 yılı 2000 kaydı aşmaz; toplu istek aşabilir)."""
         hepsi: list[dict] = []
         for e in ekipmanlar:
             hepsi += self._al("/v1/arizalar", gun=gun, ekipman=e, limit=2000)["kayitlar"]
