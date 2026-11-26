@@ -6,9 +6,11 @@ import threading
 import time
 from datetime import datetime, timezone, timedelta
 
-from .guvenilirlik import GucYasasi, en_iyi_aralik, guc_yasasi_tahmin
+from .guvenilirlik import GucYasasi, en_iyi_aralik, guc_yasasi_tahmin, sayac_karsilastir
 from .istemci import AnaKaynak, DisServisHatasi
-from .veri import donguler, ortalama_sureler
+from collections import defaultdict
+
+from .veri import KullanimSaati, donguler, ortalama_sureler
 
 TR = timezone(timedelta(hours=3))
 YORUM = {
@@ -55,6 +57,17 @@ class Analizci:
         an = self.saat()
         d = donguler(kayitlar, tipler, an)
         tur_sure, bakim_sure = ortalama_sureler(kayitlar)
+        # Kullanım ekseni (V3): vardiya üretimi varsa çalışma saatine göre döngüler, sayaç önerisi için
+        uretim = self.kaynak.uretim(self.gun, list(tipler)) if hasattr(self.kaynak, "uretim") else []
+        ks = KullanimSaati(uretim) if uretim else None
+        d_saat = donguler(kayitlar, tipler, an, ks) if ks else {}
+        gunluk: dict[str, list[list[float]]] = defaultdict(list)
+        if uretim:
+            e_gun: dict[str, dict[str, float]] = defaultdict(lambda: defaultdict(float))
+            for r in uretim:
+                e_gun[r["ekipman"]][r["gun"]] += r["planli_dk"] / 60
+            for e, g in e_gun.items():
+                gunluk[tipler.get(e, "?")].append([v for _, v in sorted(g.items())])
         tur_bilgi = {t["kod"]: t for t in ana["arizaTurleri"]}
 
         modeller: dict[str, GucYasasi] = {}
@@ -75,9 +88,16 @@ class Analizci:
             if not bilesen or cp is None:
                 continue
             o = en_iyi_aralik(bilesen, cp, float(t["bakimGun"]))
+            sayac = None
+            if d_saat:
+                bilesen_saat = [(guc_yasasi_tahmin(dl), tur_sure.get(tur, 0.0) * self.plansiz_carpan)
+                                for (tp, tur), dl in d_saat.items() if tp == tip]
+                k = sayac_karsilastir(bilesen_saat, cp, o.onerilen_gun, gunluk.get(tip, []))
+                sayac = k.sozluk() if k else None
             tip_sonuc.append({
                 "tip": tip, "ad": t["ad"], "bakimDk": round(cp, 1), **o.sozluk(),
                 "asinanTurler": [x["tur"] for x in turler if x["tip"] == tip and x["sinif"] == "asinma"],
+                "sayac": sayac,
             })
         return {
             "olusturma": datetime.fromtimestamp(an, TR).isoformat(timespec="seconds"),

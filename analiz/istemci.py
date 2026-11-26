@@ -31,3 +31,10 @@ class AnaKaynak:
         for e in ekipmanlar:
             hepsi += self._al("/v1/arizalar", gun=gun, ekipman=e, limit=2000)["kayitlar"]
         return hepsi
+
+    def uretim(self, gun: int, ekipmanlar: list[str]) -> list[dict]:
+        """Vardiya üretimi (planli_dk: ekipmanın o vardiyada kullanıldığı süre). Kullanım ekseni için."""
+        hepsi: list[dict] = []
+        for e in ekipmanlar:
+            hepsi += self._al("/v1/uretim", gun=gun, ekipman=e)["satirlar"]
+        return hepsi
