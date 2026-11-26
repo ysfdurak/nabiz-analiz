@@ -40,4 +40,4 @@ def yukle(env=os.environ) -> Ayarlar:
         carpan = min(10.0, max(1.0, float(env.get("PLANSIZ_CARPAN", "2"))))
     except ValueError:
         carpan = 2.0
-    return Ayarlar(url, _sayi(env.get("ANALIZ_GUN"), 360, 90, 365), carpan, _sayi(env.get("DAKIKALIK_ISTEK"), 60, 5, 1000), mcp_acik, anahtarlar, hatalar)
+    return Ayarlar(url, _sayi(env.get("ANALIZ_GUN"), 1095, 90, 1100), carpan, _sayi(env.get("DAKIKALIK_ISTEK"), 60, 5, 1000), mcp_acik, anahtarlar, hatalar)

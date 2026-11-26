@@ -28,7 +28,7 @@ def test_okuma_ve_basliklar(ornek, sahte_kaynak):
         assert c.get("/v1/tur/RT-MAS").json()["sinif"] == "asinma"
         assert c.get("/v1/tur/YOK-1").status_code == 404
         assert c.get("/v1/guvenilirlik?tip=uzay").status_code == 400
-        assert c.get("/v1/ozet").json()["siniflar"]["asinma"] >= 5
+        assert c.get("/v1/ozet").json()["siniflar"]["asinma"] >= 3  # gerçek sıklıkta (surum 6) 3 yılda 4 aşınan tür görünür
         for yol in ("/docs", "/redoc", "/openapi.json"):
             assert c.get(yol).status_code == 404
 
