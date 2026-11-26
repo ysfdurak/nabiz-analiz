@@ -163,3 +163,48 @@ def guc_yasasi_benzet(beta: float, eta: float, donguler: list[float], rng: np.ra
         u = np.sort(rng.uniform(0, L, size=k))
         sonuc.append((T, list(eta * u ** (1 / beta))))
     return sonuc
+
+
+@dataclass(frozen=True)
+class SayacKarsilastirma:
+    """Takvime göre bakım (her T günde bir) ile sayaca göre bakım (her H çalışma saatinde bir) karşılaştırması.
+    Aşınma çalışılan süreye bağlıysa, takvim döngüsünün içindeki çalışma saati sezona göre oynar (30 günde 380-540 saat);
+    güç yasası dışbükey olduğundan (β > 1) bu oynama arıza maliyetini büyütür. Sayaç her döngüde aynı saati verir."""
+    gunluk_saat: float           # tipin ortalama günlük çalışması
+    onerilen_saat: float         # sayaç aralığı (çalışma saati)
+    donem_saat_alt: float        # takvim önerisinde bir döngünün çalışma saati: en az / en çok (yıl içinde)
+    donem_saat_ust: float
+    maliyet_takvim: float        # duruş dk / gün / ekipman, takvim önerisi gerçek kullanım profiliyle
+    maliyet_sayac: float
+    kazanc: float                # 1 - sayaç / takvim
+
+    def sozluk(self) -> dict:
+        return {k: round(v, 3 if k == "kazanc" else 1) for k, v in asdict(self).items()}
+
+
+def sayac_karsilastir(bilesenler_saat: list[tuple[GucYasasi, float]], bakim_maliyeti: float, takvim_gun: float,
+                      gunluk_kullanim: list[list[float]]) -> SayacKarsilastirma | None:
+    """bilesenler_saat: kullanım ekseninde (saat) tahmin edilmiş modeller ve arıza maliyetleri.
+    gunluk_kullanim: ekipman başına günlük çalışma saati dizileri (vardiya üretiminden).
+    Rastgele türler β = 1 alınır (bkz. _anlamli); aşınan tür yoksa karşılaştırma anlamsızdır: None."""
+    gunluk = [g for g in gunluk_kullanim if len(g) >= 60]
+    if not gunluk:
+        return None
+    ort = float(np.mean([np.mean(g) for g in gunluk]))
+    modeller = [(_anlamli(m, takvim_gun * ort), cr) for m, cr in bilesenler_saat if m.beta is not None]
+    if not any(m.sinif == "asinma" for m, _ in modeller):
+        return None
+    sayac = en_iyi_aralik([(m, cr) for m, cr in modeller], bakim_maliyeti, takvim_gun * ort,
+                          sinirlar=(7.0 * ort, 180.0 * ort))
+    # Takvim politikası gerçek kullanımla: her ekipmanın yılını T günlük pencerelere böl
+    T = max(1, round(takvim_gun))
+    pencere_saat, toplam_maliyet, toplam_gun = [], 0.0, 0
+    for g in gunluk:
+        for i in range(0, len(g) - T + 1, T):
+            H = float(sum(g[i:i + T]))
+            pencere_saat.append(H)
+            toplam_maliyet += bakim_maliyeti + sum(cr * beklenen_ariza(m, H) for m, cr in modeller)
+            toplam_gun += T
+    m_takvim = toplam_maliyet / toplam_gun
+    m_sayac = maliyet_orani(sayac.onerilen_gun, modeller, bakim_maliyeti) * ort  # saat başına → gün başına
+    return SayacKarsilastirma(ort, sayac.onerilen_gun, min(pencere_saat), max(pencere_saat), m_takvim, m_sayac, 1 - m_sayac / m_takvim)

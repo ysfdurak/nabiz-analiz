@@ -29,6 +29,9 @@ class SahteKaynak:
     def kayitlar(self, gun, ekipmanlar):
         return self.ornek["kayitlar"]
 
+    def uretim(self, gun, ekipmanlar):
+        return self.ornek.get("uretim", [])
+
 
 @pytest.fixture
 def sahte_kaynak():
