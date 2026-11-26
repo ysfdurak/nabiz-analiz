@@ -20,7 +20,7 @@ VERİ: Her "döngü" bir ekipmanın iki planlı bakımı arasındaki dönemdir (
 from __future__ import annotations
 
 import math
-from dataclasses import dataclass, asdict
+from dataclasses import asdict, dataclass, replace
 
 import numpy as np
 from scipy import optimize, stats
@@ -101,6 +101,7 @@ class AralikOnerisi:
     ariza_yil_onerilen: float
     asinan_tur: int            # aralığı belirleyen (β > 1) tür sayısı
     gerekce: str
+    sinirda: bool = False      # öneri arama sınırına dayandı: sayı en iyi değer değil; "uzatılabilir" ya da "kısaltılabilir"
 
     def sozluk(self) -> dict:
         return {k: (round(v, 2) if isinstance(v, float) else v) for k, v in asdict(self).items()}
@@ -117,8 +118,12 @@ def en_iyi_aralik(bilesenler: list[tuple[GucYasasi, float]], bakim_maliyeti: flo
                   sinirlar: tuple[float, float] = (7.0, 180.0)) -> AralikOnerisi:
     """Maliyet oranını en küçük yapan bakım aralığı (gün). Yalnız güvenilir tahmini olan türler hesaba girer.
     β ≤ 1 olan türler planlı bakımdan yararlanmaz: rastgele türün maliyeti T'den bağımsızdır, erken dönem türünde
-    sık bakım arızayı artırır. Aşınan tür yoksa öneri, üst sınıra (aralığı uzatmaya) gider."""
-    gecerli = [(m, cr) for m, cr in bilesenler if m.beta is not None]
+    sık bakım arızayı artırır. Aşınan tür yoksa öneri, üst sınıra (aralığı uzatmaya) gider.
+
+    Sınıfı "rastgele" olan türde (güven aralığı 1'i kesiyor) nokta tahmini β̂ kullanılmaz, β = 1 alınır: β̂ = 1,2 gibi
+    anlamlı olmayan bir değer öneriyi oynatır (streçte 102-154 gün). η, mevcut aralıktaki beklenen arıza sayısı
+    korunacak biçimde yeniden hesaplanır; böylece maliyet düzeyi değişmez, yalnız aralığa etkisi kalkar."""
+    gecerli = [(_anlamli(m, mevcut_gun), cr) for m, cr in bilesenler if m.beta is not None]
     asinan = sum(1 for m, _ in gecerli if m.sinif == "asinma")
     sonuc = optimize.minimize_scalar(lambda T: maliyet_orani(T, gecerli, bakim_maliyeti), bounds=sinirlar, method="bounded",
                                      options={"xatol": 0.05})
@@ -132,10 +137,21 @@ def en_iyi_aralik(bilesenler: list[tuple[GucYasasi, float]], bakim_maliyeti: flo
         gerekce = "Aşınma var ama yavaş: aralık biraz uzatılınca toplam duruş azalıyor."
     else:
         gerekce = "Mevcut aralık en iyiye yakın."
+    sinirda = T_star >= sinirlar[1] - 1 or T_star <= sinirlar[0] + 0.5
     if T_star >= sinirlar[1] - 1:  # en iyi değer aralığın dışında: sayı bir sınır, gerçek bir en iyi değil
         gerekce += f" Öneri üst sınırda ({sinirlar[1]:.0f} gün): bu bir en iyi değer değil, sınırdır. Aralığı kademeli uzatıp arızayı izleyin."
+    elif T_star <= sinirlar[0] + 0.5:
+        gerekce += f" Öneri alt sınırda ({sinirlar[0]:.0f} gün): daha sık bakım yerine aşınan türün kök nedenine bakın."
     return AralikOnerisi(mevcut_gun, T_star, maliyet_orani(mevcut_gun, gecerli, bakim_maliyeti), float(sonuc.fun),
-                         yil(mevcut_gun), yil(T_star), asinan, gerekce)
+                         yil(mevcut_gun), yil(T_star), asinan, gerekce, sinirda)
+
+
+def _anlamli(m: GucYasasi, mevcut_gun: float) -> GucYasasi:
+    """Rastgele sınıfındaki türü β = 1'e çevirir (mevcut aralıktaki beklenen arıza aynı kalır); diğerlerine dokunmaz."""
+    if m.sinif != "rastgele" or m.beta == 1.0:
+        return m
+    eta1 = mevcut_gun / (mevcut_gun / m.eta) ** m.beta
+    return replace(m, beta=1.0, eta=eta1)
 
 
 def guc_yasasi_benzet(beta: float, eta: float, donguler: list[float], rng: np.random.Generator) -> list[tuple[float, list[float]]]:
