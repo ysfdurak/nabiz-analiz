@@ -3,7 +3,7 @@
     python -m tools.ornek_al http://localhost:8091
 
 Çıktı: tests/veri/ariza-defteri-360.json.gz (anaVeriler, kayitlar, uretim, analizAni). Arıza Defteri'nin senaryo sürümü
-değişince (ör. surum 4: kullanım) bunu çalıştırıp testleri ve dokümandaki kör deneme tablosunu yenile.
+değişince (ör. surum 4: kullanım, surum 5: akü şarjı arıza değil) bunu çalıştırıp testleri ve dokümandaki kör deneme tablosunu yenile.
 """
 from __future__ import annotations
 

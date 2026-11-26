@@ -37,7 +37,7 @@ def test_kor_tahmin(ornek, sahte_kaynak):
     r = {t["tur"]: t for t in a.rapor()["turler"]}
     # Sınıf her aşınan türde doğru olmalı. Nokta tahmini ±%35: üreticinin aşınma çarpanı [0,15; 4] ile sınırlı (yüksek β
     # düzleşir), tip içindeki ekipmanlar birleştirilir ve RT-03'ün cuma arızaları zamandan bağımsızdır; bu yüzden %90
-    # aralığı gerçeği her zaman kapsamaz (surum 4 verisinde 10 türün 6'sı). Doküman: "Kör deneme".
+    # aralığı gerçeği her zaman kapsamaz (surum 5 verisinde 10 türün 5'i). Doküman: "Kör deneme".
     for tur, beta in GERCEK.items():
         assert r[tur]["sinif"] == "asinma", tur
         assert abs(r[tur]["beta"] - beta) / beta <= 0.35, f"{tur}: {r[tur]['beta']} [{r[tur]['beta_alt']}, {r[tur]['beta_ust']}] gerçek {beta}"
@@ -45,16 +45,16 @@ def test_kor_tahmin(ornek, sahte_kaynak):
         assert r[tur]["sinif"] == "erken", tur
     for tur in ("FL-AKU", "KV-SIK", "RT-AKU", "FL-SNS", "ST-FLM"):
         assert r[tur]["sinif"] == "rastgele", tur
-    # Bilinen yanılgı: SR-ACL rastgele olduğu halde aşınma çıkıyor (32 arıza, aralık 1'e çok yakın). Çalışma saati ekseni
-    # bunu düzeltmedi (V3'te denendi). En olası açıklama küçük örneklem ve 24 türün aynı anda sınanması: %90 güvenle
-    # ~1-2 yanlış pozitif beklenir. Doküman: "Kör deneme".
-    assert r["SR-ACL"]["beta"] > 1
+    # SR-ACL surum 3-4 verisinde yanlışlıkla "aşınma" çıkıyordu; surum 5'te (aynı gerçek, farklı tohum) rastgele. Yanılgı
+    # verinin şansına bağlıydı: 24 tür aynı anda %90 güvenle sınanınca ~1 yanlış pozitif beklenir. Doküman: "Kör deneme".
+    assert r["SR-ACL"]["sinif"] == "rastgele"
 
 
 def test_bakim_araligi_onerileri(ornek, sahte_kaynak):
     r = {t["tip"]: t for t in Analizci(sahte_kaynak(ornek), saat=lambda: ornek["analizAni"]).rapor()["tipler"]}
     assert r["reach_truck"]["onerilen_gun"] < 30 and "RT-MAS" in r["reach_truck"]["asinanTurler"]
-    assert r["strec"]["onerilen_gun"] > 60, "streçte aşınma kanıtı zayıf (ST-MTR az veri): aralık uzar"
+    # Streçte aşınan tür ST-MTR (gerçek β 2, ama az arıza): öneri mevcut 60 günün çevresinde, aşırıya kaçmamalı.
+    assert "ST-MTR" in r["strec"]["asinanTurler"] and 30 < r["strec"]["onerilen_gun"] < 90
     for t in r.values():
         assert t["maliyet_onerilen"] <= t["maliyet_mevcut"] + 1e-6
 

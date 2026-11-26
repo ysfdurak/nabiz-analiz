@@ -87,66 +87,79 @@ T* = η · ( Cp / ((β−1)·Cr) )^(1/β)
 
 ## 4. Kör deneme: gerçeği bulabiliyor mu?
 
-Arıza Defteri'nin üreticisinde her türün **gizli** bir β değeri var (`katalog.js` → `asinma`). Bu değer API'den verilmez. Nabız Analiz yalnız kayıtlara bakarak tahmin eder. Veri: surum 4 (26.11.2026, kullanımlı üretici), 360 gün, 4.241 kayıt. Tablo hem takvim günüyle hem çalışma saatiyle yapılan tahmini gösterir.
+Arıza Defteri'nin üreticisinde her türün **gizli** bir β değeri var (`katalog.js` → `asinma`). Bu değer API'den verilmez. Nabız Analiz yalnız kayıtlara bakarak tahmin eder. Veri: surum 5 (26.11.2026; kullanımlı üretici, akü şarjı arıza sayılmıyor), 360 gün, 3.406 kayıt. Tablo hem takvim günüyle hem çalışma saatiyle yapılan tahmini gösterir.
 
-| Tür | Arıza | Gerçek β | Takvim: tahmin (%90 aralık) | Çalışma saati: tahmin | Sınıf (takvim / saat) |
+| Tür | Arıza | Gerçek β | Takvim β (90%) | Çalışma saati β (90%) | Sınıf (takvim / saat) |
 | --- | --- | --- | --- | --- | --- |
-| RT-MAS direk zinciri | 82 | 2,50 | 2,13 (1,78–2,52) | 2,06 (1,73–2,43) | aşınma ✓ / aşınma ✓ |
-| KV-MTR motor | 26 | 2,20 | 2,12 (1,53–2,83) | 2,16 (1,56–2,89) | aşınma ✓ / aşınma ✓ |
-| SR-TRY tray | 40 | 2,00 | 2,60 (2,07–3,20) | 2,60 (2,06–3,20) | aşınma ✓ / aşınma ✓ |
-| ST-MTR döner tabla motoru arızası | 12 | 2,00 | 1,87 (1,16–2,80) | 1,94 (1,20–2,92) | aşınma ✓ / aşınma ✓ |
-| FL-LAS lastik hasarı | 195 | 1,80 | 1,54 (1,38–1,72) | 1,54 (1,38–1,72) | aşınma ✓ / aşınma ✓ |
-| FL-HID hidrolik kaçak | 250 | 1,60 | 1,58 (1,44–1,74) | 1,62 (1,47–1,78) | aşınma ✓ / aşınma ✓ |
-| RT-HID hidrolik kaçak | 233 | 1,50 | 1,26 (1,14–1,40) | 1,26 (1,14–1,40) | aşınma ✓ / aşınma ✓ |
-| FL-FRN fren ayarı bozuk | 145 | 1,40 | 1,33 (1,17–1,51) | 1,32 (1,16–1,50) | aşınma ✓ / aşınma ✓ |
-| SR-ACL açılışta ısınma | 32 | 1,00 | 1,43 (1,08–1,85) | 1,41 (1,06–1,83) | aşınma ✗ / aşınma ✗ |
-| RT-AYR kaldırma yüksekliği ayarı | 55 | 0,70 | 0,66 (0,53–0,81) | 0,66 (0,52–0,81) | erken dönem ✓ / erken dönem ✓ |
-| ST-AYR gerginlik ayarı bozuk | 44 | 0,60 | 0,58 (0,45–0,73) | 0,63 (0,49–0,80) | erken dönem ✓ / erken dönem ✓ |
-| Diğer 13 rastgele tür | 18–614 | 1,00 | 0,88–1,10 | | rastgele 13/13 / 12/13 |
+| FL-AKU akü soketi / kablosu hasarlı | 32 | 1,00 | 1,06 (0,79–1,38) | 1,05 (0,78–1,37) | rastgele / rastgele |
+| FL-CAT çatal hasarı / yükte hasar | 127 | 1,00 | 1,15 (0,99–1,31) | 1,14 (0,99–1,30) | rastgele / rastgele |
+| FL-FRN fren ayarı bozuk | 149 | 1,40 | 1,37 (1,20–1,55) | 1,37 (1,21–1,55) | aşınma / aşınma |
+| FL-HID hidrolik kaçak | 234 | 1,60 | 1,44 (1,30–1,59) | 1,46 (1,32–1,61) | aşınma / aşınma |
+| FL-LAS lastik hasarı | 200 | 1,80 | 1,50 (1,34–1,67) | 1,50 (1,34–1,67) | aşınma / aşınma |
+| FL-SNS uyarı ışığı / sensör hatası | 386 | 1,00 | 1,01 (0,93–1,09) | 1,01 (0,93–1,09) | rastgele / rastgele |
+| KV-BNT bant kayması | 243 | 1,00 | 0,95 (0,86–1,06) | 0,96 (0,86–1,06) | rastgele / rastgele |
+| KV-FTS fotosel arızası | 104 | 1,00 | 1,13 (0,96–1,31) | 1,15 (0,97–1,34) | rastgele / rastgele |
+| KV-HIZ hat yavaş çalışıyor | 82 | 1,00 | 0,98 (0,82–1,17) | 1,00 (0,83–1,19) | rastgele / rastgele |
+| KV-MTR motor / redüktör arızası | 31 | 2,20 | 2,24 (1,67–2,92) | 2,30 (1,72–3,00) | aşınma / aşınma |
+| KV-SIK koli sıkışması | 425 | 1,00 | 0,98 (0,91–1,06) | 0,99 (0,92–1,07) | rastgele / rastgele |
+| RT-AKU akü soketi / kablosu hasarlı | 19 | 1,00 | 1,18 (0,80–1,67) | 1,18 (0,80–1,66) | rastgele / rastgele |
+| RT-AYR kaldırma yüksekliği ayarı | 57 | 0,70 | 0,76 (0,61–0,93) | 0,75 (0,60–0,92) | erken / erken |
+| RT-HID hidrolik kaçak / basınç düşük | 216 | 1,50 | 1,33 (1,19–1,48) | 1,31 (1,17–1,46) | aşınma / aşınma |
+| RT-MAS direk zinciri / kaldırma sorunu | 75 | 2,50 | 2,00 (1,66–2,39) | 1,95 (1,62–2,32) | aşınma / aşınma |
+| RT-SNS yükseklik sensörü hatası | 162 | 1,00 | 1,00 (0,88–1,13) | 1,00 (0,88–1,13) | rastgele / rastgele |
+| SR-ACL açılışta ısınma / test turu uzun sürdü | 29 | 1,00 | 1,01 (0,74–1,33) | 1,00 (0,73–1,32) | rastgele / rastgele |
+| SR-OKU barkod okuyucu hatası (yanlış oluk) | 71 | 1,00 | 1,05 (0,86–1,25) | 1,04 (0,86–1,24) | rastgele / rastgele |
+| SR-PLC plc / yazılım hatası | 9 | 1,00 | 0,74 (0,41–1,20) | 0,73 (0,41–1,20) | rastgele / rastgele |
+| SR-SIK sıkışma | 99 | 1,00 | 1,05 (0,89–1,22) | 1,05 (0,89–1,22) | rastgele / rastgele |
+| SR-TRY tray / klape arızası | 38 | 2,00 | 1,80 (1,40–2,26) | 1,79 (1,39–2,25) | aşınma / aşınma |
+| ST-AYR gerginlik ayarı bozuk | 38 | 0,60 | 0,73 (0,56–0,94) | 0,84 (0,63–1,08) | erken / rastgele ✗ |
+| ST-FLM film kopması | 143 | 1,00 | 1,00 (0,87–1,14) | 0,99 (0,87–1,13) | rastgele / rastgele |
+| ST-MTR döner tabla motoru arızası | 16 | 2,00 | 1,71 (1,13–2,44) | 1,71 (1,13–2,46) | aşınma / aşınma |
 
-**Sonuç:** Takvim ekseninde 24 türün 23'ü doğru sınıflandı, çalışma saati ekseninde 22'si (KV-SIK sınırda: 1,09 [1,01–1,19]). Aşınan ve erken dönem türlerinin hepsi doğru. Analiz bu yüzden sınıflandırmada takvim eksenini kullanıyor; çalışma saati, bakım politikası karşılaştırmasında kullanılıyor (aşağıda).
+**Sonuç:** Takvim ekseninde 24 türün 24'ü doğru sınıflandı, çalışma saati ekseninde 23'ü (ST-AYR sınırda: 0,84 [0,63–1,08]). Analiz bu yüzden sınıflandırmada takvim eksenini kullanıyor; çalışma saati, bakım politikası karşılaştırmasında kullanılıyor (aşağıda).
 
-- **SR-ACL (yalancı aşınma), açıklama düzeltildi (26.11.2026):** Önceki sürümde "takvim günüyle ölçüldüğü için, çalışma saatine geçince düzelir" demiştik. V3'te denedik, düzelmedi: çalışma saatiyle de 1,41 (1,06–1,83). Daha olası açıklama küçük örneklem ve çoklu karşılaştırma: 32 arıza var, 24 tür aynı anda %90 güvenle sınanıyor. Rastgele bir türün yanlışlıkla "aşınma" çıkma olasılığı tür başına ~%5, 13 rastgele türde yaklaşık 1 yanlış pozitif beklenir.
-  - **Bu yapı uygun değil, şöyle uygulanır:** Bir hipotezi dokümana "neden" diye yazmadan önce test et. "Çalışma saatine geçince düzelir" bir hipotezdi; test edilince yanlış çıktı.
-  - **Şöyle daha iyi olur:** Çok sayıda tür birlikte sınanırken yanlış pozitif oranını denetlemek (Benjamini-Hochberg) ya da küçük örneklemde "aşınma" demek için daha güçlü kanıt istemek. Bedeli: gerçek ama zayıf aşınmayı (ST-MTR, 12 arıza) kaçırmak. Karar bekliyor.
-- **%90 aralığı gerçeği her zaman kapsamıyor (10 türün 6'sı):** Üç bilinen neden var:
-  1. Üreticide aşınma çarpanı [0,15; 4] aralığıyla sınırlı, bu yüksek β'yı düzleştirir (RT-MAS 2,13 / gerçek 2,50).
-  2. Tip içindeki ekipmanlar birleştiriliyor; yaş ve kullanım farkı tahmini 1'e doğru çeker (RT-HID 1,26 / gerçek 1,50).
-  3. RT-03'ün cuma arızaları zamandan bağımsız ek arıza üretir.
+- **SR-ACL (yalancı aşınma) kayboldu; açıklamanın doğrulanması:** surum 3 ve 4 verisinde SR-ACL rastgele olduğu halde "aşınma" çıkıyordu (1,43). İlk açıklamamız "takvim günüyle ölçüyoruz" idi; çalışma saatine geçince düzelmedi. İkinci açıklama "küçük örneklem ve çoklu karşılaştırma" idi: 24 tür aynı anda %90 güvenle sınanıyor, 13 rastgele türde yaklaşık 1 yanlış pozitif beklenir. surum 5'te SR-ACL'nin gerçeği değişmedi, yalnız rastgele tohum değişti ve sonuç 1,01 (rastgele) çıktı. Yani yanılgı verinin şansına bağlıydı, modelin bir kusuruna değil.
+  - **Bu yapı uygun değil, şöyle uygulanır:** Bir hipotezi dokümana "neden" diye yazmadan önce test et. "Çalışma saati düzeltir" test edilince yanlış çıktı; "çoklu karşılaştırma" ise farklı tohumla tekrar edilince desteklendi.
+  - **Burada bir test daha yapalım:** Aynı katalogla 20 farklı tohumda kör deneme; türlerin kaçında kaç kez yanlış sınıf çıktığını say. Beklenen: rastgele türlerde tohum başına ~0,5-1 yanlış pozitif, hep aynı türde değil.
+  - **Şöyle daha iyi olur:** Çok sayıda tür birlikte sınanırken yanlış pozitif oranını denetlemek (Benjamini-Hochberg). Bedeli: zayıf ama gerçek aşınmayı (ST-MTR, 16 arıza) kaçırmak. Karar bekliyor.
+- **%90 aralığı gerçeği her zaman kapsamıyor (10 türün 5'i):** Üç bilinen neden var:
+  1. Üreticide aşınma çarpanı [0,15; 4] aralığıyla sınırlı, bu yüksek β'yı düzleştirir (RT-MAS 2,00 / gerçek 2,50).
+  2. Tip içindeki ekipmanlar birleştiriliyor; yaş ve kullanım farkı tahmini 1'e doğru çeker (FL-LAS 1,50 / gerçek 1,80).
+  3. RT-03'ün cuma arızaları zamandan bağımsız ek arıza üretir (RT-HID 1,33 / gerçek 1,50).
   Sınıf doğru çıkıyor, sayı kayıyor. Test bu yüzden "aralık gerçeği kapsıyor" yerine "sınıf doğru ve tahmin ±%35" diye denetliyor. **Şöyle daha iyi olur:** ekipman başına ayrı ölçek (η) ile ortak β (hiyerarşik model).
 
 ### 4.1 Takvim mi, sayaç mı? (V3)
 
-Arıza Defteri surum 4'te aşınma bakımdan beri **çalışılan süreyle** ilerliyor ve ekipmanın kullanımı sezona göre değişiyor. Soru: bakımı takvime göre (her 30 günde bir) mi, sayaca göre (her N çalışma saatinde bir) mi yapmalı?
+Arıza Defteri surum 4'ten beri aşınma bakımdan beri **çalışılan süreyle** ilerliyor ve ekipmanın kullanımı sezona göre değişiyor. Soru: bakımı takvime göre (her 30 günde bir) mi, sayaca göre (her N çalışma saatinde bir) mi yapmalı?
 
 `sayac_karsilastir` iki politikayı aynı modelle karşılaştırır. Takvim politikasında her döngünün çalışma saati gerçek kullanım profilinden hesaplanır (yıl boyunca T günlük pencereler); sayaç politikasında her döngü aynı saattir.
 
 | Tip | Takvim önerisi | Günlük çalışma (sa) | Takvim döngüsü (sa, yıl içinde) | Sayaç önerisi (sa) | Sayaca geçmenin kazancı |
 | --- | --- | --- | --- | --- | --- |
-| Forklift | 30 → 12 gün | 14,8 | 148–232 | 177 | %0,2 |
-| Reach truck | 30 → 10 gün | 14,8 | 121–185 | 145 | %0,2 |
-| Konveyör | 45 → 26 gün | 14,8 | 342–469 | 356 | −%1,5 |
-| Sorter | 30 → 14 gün | 11,3 | 137–198 | 157 | −%0,4 |
-| Streç | 60 → 67 gün | 11,4 | 724–788 | 680 | −%1,6 |
+| Forklift | 30 → 13 gün | 14,8 | 164–242 | 194 | −%0,5 |
+| Reach truck | 30 → 9 gün | 14,8 | 109–173 | 142 | %0,2 |
+| Konveyör | 45 → 22 gün | 14,8 | 287–395 | 319 | −%0,4 |
+| Sorter | 30 → 15 gün | 11,3 | 148–206 | 167 | %0,2 |
+| Streç | 60 → 51 gün | 11,4 | 543–629 | 481 | %0,7 |
 
-- **Sonuç: bu depoda sayaca geçmek kazandırmıyor** (fark %2'den az; eksi değerler model gürültüsü). Asıl kazanç aralığı kısaltmak (30 → 12 gün: duruş maliyetinde %11).
-- **İçeride ne oluyor:** Sayacın kazancı, döngüden döngüye çalışma saatinin ne kadar oynadığına bağlı. Güç yasası dışbükey (β > 1) olduğu için uzun döngünün fazladan arızası, kısa döngünün kazancından büyüktür (Jensen eşitsizliği). Ama burada kullanım yalnız ±%20 oynuyor ve önerilen döngü kısa (12 gün). Kazanç ikinci dereceden küçük kalıyor.
+- **Sonuç: bu depoda sayaca geçmek kazandırmıyor** (fark %1'den az; eksi değerler model gürültüsü). Asıl kazanç aralığı kısaltmak (forklift 30 → 13 gün: duruş maliyetinde %8).
+- **İçeride ne oluyor:** Sayacın kazancı, döngüden döngüye çalışma saatinin ne kadar oynadığına bağlı. Güç yasası dışbükey (β > 1) olduğu için uzun döngünün fazladan arızası, kısa döngünün kazancından büyüktür (Jensen eşitsizliği). Ama burada kullanım yalnız ±%20 oynuyor ve önerilen döngü kısa. Kazanç ikinci dereceden küçük kalıyor.
 - **Sayaç ne zaman değer?** Kullanımın çok oynadığı yerde: yedek ekipman (bazı haftalar hiç çalışmayan), sezonluk hat, vardiya sayısı değişen operasyon. Ekran bu sonucu tip başına "takvim yeterli" diye söylüyor; sayaç (bakımdan beri çalışma saati) yine gösteriliyor, çünkü bir ekipmanın aynı takvim gününde ne kadar yıprandığını görmek bakım planlamacısı için değerli.
 - **Burada bir test daha yapalım:** Yoğun sezonda (kasım-aralık) yalnız 2 vardiya çalışan bir senaryo (kullanım oynaması büyür) ile tabloyu yeniden üret; sayacın kazancı büyümeli.
 
-**Bakım aralığı önerileri ve duyarlılık (surum 4 verisi):** Plansız duruş çarpanı değişince öneri ne kadar oynuyor? Gün; parantezde günlük duruş maliyetindeki düşüş; `*` arama sınırına (7 ya da 180 gün) dayandı.
+**Bakım aralığı önerileri ve duyarlılık (surum 5 verisi):** Plansız duruş çarpanı değişince öneri ne kadar oynuyor? Gün; parantezde günlük duruş maliyetindeki düşüş; `*` arama sınırına (7 gün) dayandı.
 
 | Tip | Mevcut | ×1 | ×1,5 | ×2 (varsayılan) | ×3 | ×4 |
 | --- | --- | --- | --- | --- | --- | --- |
-| Forklift | 30 | 19 (%3) | 15 (%7) | 12 (%11) | 9 (%15) | 8 (%19) |
-| Reach truck | 30 | 15 (%9) | 12 (%13) | 10 (%16) | 8 (%20) | 7* (%23) |
-| Sorter | 30 | 19 (%7) | 16 (%11) | 14 (%13) | 12 (%17) | 11 (%20) |
-| Konveyör | 45 | 36 (%1) | 30 (%2) | 26 (%4) | 21 (%6) | 19 (%7) |
-| Streç | 60 | 87 (%4) | 74 (%1) | 67 (%0) | 58 (%0) | 54 (%0) |
+| Forklift | 30 | 21 (%2) | 16 (%5) | 13 (%8) | 10 (%13) | 8 (%16) |
+| Reach truck | 30 | 14 (%10) | 11 (%15) | 9 (%18) | 7* (%23) | 7* (%26) |
+| Sorter | 30 | 22 (%2) | 17 (%5) | 15 (%8) | 12 (%12) | 10 (%14) |
+| Konveyör | 45 | 30 (%3) | 25 (%6) | 22 (%7) | 18 (%10) | 16 (%12) |
+| Streç | 60 | 72 (%1) | 58 (%0) | 51 (%1) | 42 (%3) | 36 (%4) |
 
-- **Yön sağlam, sayı değil.** Forklift, reach truck ve sorterda her çarpanda "daha sık bakım" çıkıyor. Yöneticiye "30 yerine 10-15 gün" diye aralık olarak sunulmalı, tek sayı olarak değil. Çarpan 1 bile kısaltıyor: sonuç yalnız "plansız duruş pahalıdır" varsayımına dayanmıyor.
+- **Yön sağlam, sayı değil.** Forklift, reach truck, sorter ve konveyörde her çarpanda "daha sık bakım" çıkıyor. Yöneticiye "30 yerine 10-15 gün" diye aralık olarak sunulmalı, tek sayı olarak değil. Çarpan 1 bile kısaltıyor: sonuç yalnız "plansız duruş pahalıdır" varsayımına dayanmıyor.
 - **Rastgele türler β = 1 (karar 26.11.2026).** Sınıfı rastgele olan türün anlamlı olmayan β̂'sı (ör. 1,2) maliyete girince öneri oynuyordu; surum 3 verisinde streç 102-154 gün arasında gidip geliyordu. Artık bu türler β = 1 alınır; η, mevcut aralıktaki beklenen arıza korunacak biçimde yeniden hesaplanır. Kod: `guvenilirlik._anlamli`; test: `test_rastgele_turun_nokta_tahmini_araligi_oynatmaz`. Sınıra dayanan öneri sayı olarak değil "uzatılabilir" diye gösterilir (`sinirda`).
-- **Streç değişti:** surum 3'te "uzatılabilir" diyordu (aşınan tür yoktu). surum 4 verisinde ST-MTR'nin aşınması 12 arızayla görünür oldu (1,87 [1,16–2,80]) ve öneri mevcut 60 güne yakın (67 gün, kazanç ~%0). Veri değişince öneri değişir; bu yüzden öneri her saat yeniden hesaplanıyor.
+- **Streç her veri sürümünde değişti:** surum 3'te "uzatılabilir" (aşınan tür görünmüyordu), surum 4'te 67 gün, surum 5'te 51 gün. ST-MTR gerçekten aşınıyor (β 2) ama yılda yalnız 16 arıza var; bu kadar az veriyle öneri ±15 gün oynar. Streç için "mevcut 60 gün makul, değiştirmek için veri az" demek en dürüst cevap. Test bu yüzden sabit sayı değil, "ST-MTR aşınan ve öneri 30-90 gün" diye denetliyor.
 
 ## 5. Kod turu
 
@@ -181,7 +194,8 @@ Arıza Defteri surum 4'te aşınma bakımdan beri **çalışılan süreyle** ile
 ## 8. Bilinen sınırlar
 
 - Sınıflandırma takvim günüyle. Çalışma saati ekseni de var (V3) ama bu veride sınıflandırmayı iyileştirmedi; politika karşılaştırmasında kullanılıyor.
-- 24 tür aynı anda sınanıyor; yanlış pozitif denetimi yok (SR-ACL).
+- 24 tür aynı anda sınanıyor; yanlış pozitif denetimi yok (surum 4'te SR-ACL).
+- Az arızalı türde (ST-MTR, 16 arıza) öneri veri sürümüne göre ±15 gün oynar.
 - Tip içi farklılık β'yı 1'e çekiyor (hiyerarşik model yok).
 - Bakım aralığı tüm tip için tek değer. Ekipman başına (yaşlı forklifte daha sık) öneri yok.
 - Maliyet duruş dakikası. Parça ve işçilik maliyeti yok.
@@ -193,7 +207,7 @@ Arıza Defteri surum 4'te aşınma bakımdan beri **çalışılan süreyle** ile
 2. **β ne anlatıyor, yöneticiye nasıl söylersin?** "Bu arıza bakımdan uzaklaştıkça artıyor mu?" β > 1 ise evet, bakım işe yarar. β ≈ 1 ise bakım bu arızayı etkilemez, başka önlem gerekir.
 3. **Az veride ne yapıyorsun?** Sınıfı nokta tahmin değil güven aralığı belirler. 9 arızalık bir türde aralık 1'i kestiği için "aşınma" demiyoruz.
 4. **Modelin doğru çalıştığını nasıl bildin?** İki yolla: bilinen β ile benzetim (kapsama ~%90), ve Arıza Defteri'nin gizli β'larına karşı kör deneme (24 türün 22'si doğru; iki yanılgının nedeni biliniyor).
-5. **SR-ACL neden yanlış çıktı?** İlk açıklamam "takvim günüyle ölçüyoruz" idi; çalışma saatine geçip test ettim, sonuç değişmedi. Daha olası açıklama: 32 arıza ve 24 türün aynı anda %90 güvenle sınanması; 13 rastgele türde ~1 yanlış pozitif beklenir. Çözüm yanlış pozitif denetimi (Benjamini-Hochberg), bedeli zayıf aşınmayı kaçırmak.
+5. **SR-ACL neden yanlış çıktı?** İlk açıklamam "takvim günüyle ölçüyoruz" idi; çalışma saatine geçip test ettim, sonuç değişmedi. İkinci açıklama: 24 türün aynı anda %90 güvenle sınanması; 13 rastgele türde ~1 yanlış pozitif beklenir. Veri tohumu değişince (surum 5) SR-ACL doğru çıktı: yanılgı şansa bağlıydı. Çözüm yanlış pozitif denetimi (Benjamini-Hochberg), bedeli zayıf aşınmayı kaçırmak.
 5b. **Bakımı sayaca mı bağlamalı?** Bu depoda hayır: kullanım ±%20 oynuyor, sayacın kazancı %2'den az. Asıl kazanç aralığı kısaltmak. Sayaç, kullanımı çok oynayan ekipmanda (yedek, sezonluk) değer.
 6. **Bakım aralığı nasıl hesaplanıyor?** Periyodik bakım ve minimal onarım politikasında gün başına maliyet en aza indiriliyor. Tek türde analitik çözüm var, test sayısal sonucu onunla karşılaştırıyor.
 7. **Neden ayrı servis, neden Python?** scipy'nin kök bulma, optimizasyon ve dağılım fonksiyonları hazır. Diğer servisler Node'da. HTTP ve MCP dil bağımsız olduğu için ikisi sorunsuz konuşuyor.
@@ -225,13 +239,14 @@ Beklenen: aşınan tiplerde çarpan büyüdükçe aralık kısalır. Sonucunu yu
 1. Nabız → Analiz: RT-MAS kırmızı (aşınma), FL-AKU gri (rastgele), ST-AYR sarı (erken dönem). Güven çizgilerini göster.
 2. "Neden Weibull değil" sorusunu bir cümleyle cevapla.
 3. Bakım aralığı: reach truck 30 → 10 gün, streç "uzatılabilir". Neden zıt yönler?
-4. Kör deneme tablosu: 24 türün 23'ü doğru; SR-ACL için hipotezi nasıl test edip düzelttiğin. Takvim-sayaç tablosu: "sayaç bu depoda gerekmiyor" sonucu.
+4. Kör deneme tablosu: 24 türün 24'ü doğru; SR-ACL için iki hipotezi nasıl test ettiğin (biri çürüdü, biri desteklendi). Takvim-sayaç tablosu: "sayaç bu depoda gerekmiyor" sonucu.
 5. RT-MAS'ın A3 taslağı: karşı önlemde bakım aralığı önerisi otomatik geliyor.
 
 ## 12. Değişiklik günlüğü
 
 | Tarih | Değişiklik |
 | --- | --- |
+| 26.11.2026 | Arıza Defteri surum 5 (akü şarjı arıza sayılmıyor): test verisi ve tablolar yenilendi. Kör deneme takvimde 24/24; SR-ACL yanılgısı kayboldu (çoklu karşılaştırma açıklamasını destekliyor). Streç testi sabit sayı yerine aralık (30-90 gün). 23 test. |
 | 26.11.2026 | V3: kullanım ekseni (`KullanimSaati`, Arıza Defteri vardiya üretiminden) ve takvim-sayaç karşılaştırması (`sayac_karsilastir`, tip başına `sayac` alanı). Kör deneme surum 4 verisiyle yenilendi (takvim 23/24, çalışma saati 22/24). SR-ACL açıklaması düzeltildi (çalışma saati düzeltmedi; küçük örneklem + çoklu karşılaştırma). Kör deneme testi "sınıf doğru, tahmin ±%35"; test verisi `tools/ornek_al.py` ile yeniden üretilir. 23 test. |
 | 26.11.2026 | Rastgele sınıfındaki türler bakım aralığı hesabında β = 1 alınır (streç önerisi artık çarpana göre oynamıyor); sınıra dayanan öneri `sinirda` alanıyla işaretlenir. Duyarlılık tablosu yenilendi; 21 test. |
 | 25.11.2026 | İlk CI: çalışma bağımlılıkları da kurulur (requirements-dev yalnız pytest içeriyordu); Dependabot yalnız Python yama sürümü önerir. Plansız duruş çarpanı duyarlılık tablosu (×1-×4); üst sınıra dayanan öneri gerekçede belirtilir (+1 test kontrolü). |
